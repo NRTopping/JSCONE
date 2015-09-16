@@ -18,15 +18,35 @@
 %option nounput
 %option yylineno  
 
-STRING  \"([^"\\]|\\([\\\/bfnrt]|u[0-9a-fA-F]{4})"])*\"
-NUMBER  -?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?
-TRUE    true
-FALSE   false
-NULL    null
-
+STRING      \"([^"\\]|\\([\\\/bfnrt]|u[0-9a-fA-F]{4})])*\"
+NUMBER      -?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?
+TRUE        true
+FALSE       false
+NULL        null
+WHITESPACE  [ \t\v\f\r\n]
 
 %%
   /* Rules Section */
+{WHITESPACE}  { /* Ignore Whitespace */ }
+{STRING}      printf("JSON_STRING:<%s>\n",yytext); 
+{NUMBER}      printf("JSON_NUMBER:<%s>\n",yytext);
+"["           printf("%s\n",yytext);
+"]"           printf("%s\n",yytext);
+"{"           printf("%s\n",yytext);
+"}"           printf("%s\n",yytext);
+":"           printf("%s\n",yytext);
+","           printf("%s\n",yytext);
+.             printf("UNKNOWN CHARACTER: %s\n",yytext);
 
 %%
   /* User Code Section */
+int yywrap() { 
+  return 1;
+}
+
+int main() {
+  printf("Starting\n");
+  yylex(); // Run lexer
+  yylex_destroy(); // Clean up lexer
+  return 0;
+}
