@@ -16,7 +16,9 @@
 
   /* Definitions Section */
 %option nounput
-%option yylineno  
+%option yylineno 
+%option nodefault
+%option noyywrap
 
 STRING      \"([^"\\]|\\([\\\/bfnrt]|u[0-9a-fA-F]{4})])*\"
 NUMBER      -?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?
@@ -45,7 +47,6 @@ int yywrap() {
 }
 
 int main() {
-  printf("Starting\n");
   yylex(); // Run lexer
   yylex_destroy(); // Clean up lexer
   return 0;
