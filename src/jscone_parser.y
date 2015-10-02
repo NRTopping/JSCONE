@@ -8,6 +8,16 @@
 
 %{
   // Included Files 
+  extern int yylineno;
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <stdarg.h>
+
+#if YYBISON
+int yylex();
+void yyerror(const char *s);
+
+#endif
 %}
 
 %union{
@@ -17,12 +27,12 @@
 }
 
 // Declare Tokens
-%token <string> STRING
-%token <number> NUMBER
+%token <string> STRING_TOKEN
+%token <number> NUMBER_TOKEN
 
-%token TRUE
-%token FALSE
-%token NULL
+%token TRUE_TOKEN
+%token FALSE_TOKEN
+%token NULL_TOKEN
 
 %start object 
 
@@ -37,7 +47,7 @@ members : pair
         | pair ',' members
         ;
 
-pair : string ':' value
+pair : STRING_TOKEN ':' value
      ;
 
 array : '[' ']'
@@ -48,11 +58,17 @@ elements : value
          | value ',' elements
          ;
 
-value : STRING
-      | NUMBER
+value : STRING_TOKEN
+      | NUMBER_TOKEN
       | object
       | array
-      | TRUE
-      | FALSE
-      | NULL
+      | TRUE_TOKEN
+      | FALSE_TOKEN
+      | NULL_TOKEN
       ;
+
+%%
+
+void yyerror(const char *s) { 
+  fprintf(stderr, "%d: %s\n", yylineno, s);
+}

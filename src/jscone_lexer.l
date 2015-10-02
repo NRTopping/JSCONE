@@ -10,7 +10,10 @@
 %{
   #include <stdio.h>
 
+
+  #include "jscone_parser.tab.h"
   // TODO add definitions 
+
 
 %}
 
@@ -42,12 +45,10 @@ WHITESPACE  [ \t\v\f\r\n]
 
 %%
   /* User Code Section */
-int yywrap() { 
-  return 1;
-}
 
 int main() {
-  yylex(); // Run lexer
+  /*yylex(); // Run lexer*/
+  yyparse();
   yylex_destroy(); // Clean up lexer
   return 0;
 }
